@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music</title>
+    <style>
+        * {
+
+            box-sizing: border-box;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+
+            background-image: linear-gradient(#f3a6a6, #afb4ea);
+            overflow: auto;
+        }
+
+        .music_vessel {
+            width: 1000px;
+            height: 480px;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+        }
+
+        .music_display {
+            margin: 10px;
+            overflow: auto;
+        }
+
+        .music_image {
+            width: 250px;
+            height: 250px;
+            margin: 60px;
+            float: left;
+            border-radius: 125px;
+            outline: 5px solid rgba(0, 0, 0, 0.6);
+        }
+
+        .music_menu {
+            margin: 0 60px 20px;
+        }
+
+
+
+        .music_up,
+        .music_play,
+        .music_pause,
+        .music_next {
+            margin: 0 8px;
+            background-size: 100% 100%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .music_up:hover,
+        .music_play:hover,
+        .music_pause:hover,
+        .music_next:hover {
+            opacity: .3;
+        }
+
+        .music_up {
+            float: left;
+            background-image: linear-gradient(#e66465, #9198e5);
+        }
+
+        .music_play {
+            float: left;
+            background-image: linear-gradient(#f69292, #111111);
+        }
+
+        .music_pause {
+            float: left;
+            background-image: linear-gradient(#e66825, #5588e5);
+            display: none;
+        }
+
+        .music_next {
+            float: left;
+            background-image: linear-gradient(#a45665, #b70959);
+        }
+
+        .menu_right {
+            width: 650px;
+            margin-left: 50px;
+            float: left
+        }
+
+        .music_title {
+            float: left;
+            color: #333;
+            font: 600 14px Helvetica, sans-serif;
+        }
+
+        .music_duration {
+            float: right;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .music_audio {
+            display: none;
+        }
+
+        #range {
+            display: block;
+            clear: right;
+            width: 650px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="music_vessel">
+        <div class="music_display">
+            <!-- 默认音乐图片填充 -->
+            <img src="images/1.png" class="music_image">
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="music_menu">
+            <div class="music_up"></div>
+            <div class="music_play"></div>
+            <div class="music_pause"></div>
+            <div class="music_next"></div>
+            <div class="menu_right">
+                <div class="music_info">
+                    <div class="music_content">
+                        <span class="music_title">
+                            点击播放键播放音乐
+                        </span>
+                        <span class="music_duration">
+                            0:00 / 0:00
+                        </span>
+                    </div>
+                    <!-- 时长控制 -->
+                    <input type="range" id="range" class="duration_control" value="0" disabled>
+                </div>
+            </div>
+        </div>
+        <audio src="" class="music_audio"></audio>
+</body>
+
+</html>
