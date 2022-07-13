@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1#0">
     <title>Music</title>
     <style>
         * {
@@ -25,7 +25,7 @@
             overflow: auto;
         }
 
-        .music_vessel {
+        #music_vessel {
             width: 1000px;
             height: 480px;
             margin: 100px auto;
@@ -33,12 +33,12 @@
             border-radius: 25px;
         }
 
-        .music_display {
+        #music_display {
             margin: 10px;
             overflow: auto;
         }
 
-        .music_image {
+        #music_image {
             width: 250px;
             height: 250px;
             margin: 60px;
@@ -47,16 +47,16 @@
             outline: 5px solid rgba(0, 0, 0, 0.6);
         }
 
-        .music_menu {
+        #music_menu {
             margin: 0 60px 20px;
         }
 
 
 
-        .music_up,
-        .music_play,
-        .music_pause,
-        .music_next {
+        #music_up,
+        #music_play,
+        #music_pause,
+        #music_next {
             margin: 0 8px;
             background-size: 100% 100%;
             width: 35px;
@@ -64,61 +64,61 @@
             cursor: pointer;
         }
 
-        .music_up:hover,
-        .music_play:hover,
-        .music_pause:hover,
-        .music_next:hover {
+        #music_up:hover,
+        #music_play:hover,
+        #music_pause:hover,
+        #music_next:hover {
             opacity: .3;
         }
 
-        .music_up {
+        #music_up {
             float: left;
-            background: url('images/up.png') ;
+            background: url('images/up.png');
             background-size: cover;
         }
 
-        .music_play {
+        #music_play {
             float: left;
             background: url('images/play.png') no-repeat;
             background-size: auto 35px;
         }
 
-        .music_pause {
+        #music_pause {
             float: left;
-            background: url('images/pause.png') ;
+            background: url('images/pause.png');
             background-size: cover;
             display: none;
         }
 
-        .music_next {
+        #music_next {
             float: left;
-            background: url('images/next.png') ;
+            background: url('images/next.png');
             background-size: cover;
         }
 
-        .menu_right {
+        #menu_right {
             width: 650px;
             margin-left: 50px;
             float: left
         }
 
-        .music_title {
+        #music_title {
             float: left;
             color: #333;
             font: 600 14px Helvetica, sans-serif;
         }
 
-        .music_duration {
+        #music_duration {
             float: right;
             font-size: 13px;
             color: #999;
         }
 
-        .music_audio {
+        #music_audio {
             display: none;
         }
 
-        #range {
+        #duration_control {
             display: block;
             clear: right;
             width: 650px;
@@ -129,34 +129,113 @@
 
 <body>
 
-    <div class="music_vessel">
-        <div class="music_display">
+    <div id="music_vessel">
+        <div id="music_display">
             <!-- 默认音乐图片填充 -->
-            <img src="images/1.png" class="music_image">
+            <img src="images/1.png" id="music_image">
         </div>
 
         <!-- 操作按钮 -->
-        <div class="music_menu">
-            <div class="music_up"></div>
-            <div class="music_play"></div>
-            <div class="music_pause"></div>
-            <div class="music_next"></div>
-            <div class="menu_right">
-                <div class="music_info">
-                    <div class="music_content">
-                        <span class="music_title">
-                            点击播放键播放音乐
+        <div id="music_menu">
+            <div id="music_up"></div>
+            <div id="music_play"></div>
+            <div id="music_pause"></div>
+            <div id="music_next"></div>
+            <div id="menu_right">
+                <div id="music_info">
+                    <div id="music_content">
+                        <span id="music_title">
+                            暂无可播放音乐
                         </span>
-                        <span class="music_duration">
+                        <span id="music_duration">
                             0:00 / 0:00
                         </span>
                     </div>
                     <!-- 时长控制 -->
-                    <input type="range" id="range" class="duration_control" value="0" disabled>
+                    <input type="range" id="duration_control" value="0" disabled>
                 </div>
             </div>
         </div>
-        <audio src="" class="music_audio"></audio>
+        <audio id="music_audio"></audio>
+
+        <script>
+            try {
+                const musicList = [
+                    { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
+                ]
+                if (musicList.length != 0) {
+                    const musicImg = document.getElementById('music_image');
+                    const musicUp = document.getElementById('music_up');
+                    const musicPlay = document.getElementById('music_play');
+                    const musicPause = document.getElementById("music_pause");
+                    const musicNext = document.getElementById("music_next");
+                    const musicRight = document.getElementById("music_right");
+                    const musicTitle = document.getElementById("music_title");
+                    const musicDuration = document.getElementById("music_duration");
+                    const durationControl = document.getElementById('duration_control');
+                    const musicAudio = document.getElementById("music_audio");
+                    //音乐播放列表
+                    let activePlay = 0; // 当前播放的那一首
+                    let degree = 0;
+                    var timer, totalF, totalM;
+                    function rotate() {      //图片旋转
+                        timer = setInterval(() => {
+                            musicImg.style.transform = `rotate(${degree}deg)`;
+                            degree ++;
+                            if (degree == 360) {
+                                degree = 0;
+                            }
+                        }, 30);
+                    }
+
+                    console.log(musicAudio.duration);
+                    musicTitle.innerText = musicList[activePlay].title;
+                    musicAudio.src = musicList[activePlay].url;
+                    durationControl.disabled = false;
+
+                    // 开始播放
+                    musicPlay.onclick = () => {
+                        musicAudio.play();
+                        durationControl.max = musicAudio.duration;
+                        totalF = parseInt(musicAudio.duration / 60); //总时长 分钟
+                        totalM = parseInt(musicAudio.duration % 60); //总时长 秒数
+                        totalM = totalM < 10 ? '0' + totalM : totalM;
+                        musicPlay.style.display = "none";
+                        musicPause.style.display = "block";
+                        rotate();
+                    }
+                    musicPause.onclick = () => {
+                        musicAudio.pause();
+                        musicPlay.style.display = "block";
+                        musicPause.style.display = "none";
+                        clearInterval(timer);
+                    }
+                    musicAudio.ontimeupdate = () => {
+                        let currentF = parseInt(musicAudio.currentTime / 60);
+                        let currentM = parseInt(musicAudio.currentTime % 60);
+                        currentM = currentM < 10 ? '0' + currentM : currentM;
+                        musicDuration.innerHTML = ` ${currentF}:${currentM} / ${totalF}:${totalM}`;
+                        durationControl.value = musicAudio.currentTime;
+                    }
+                    durationControl.onchange = () => {
+                        musicAudio.currentTime = durationControl.value;
+                    }
+                }
+            }
+
+
+
+            catch (err) {
+                alert(err);
+            }
+
+
+
+
+
+
+
+        </script>
 </body>
 
 </html>
