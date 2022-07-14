@@ -20,17 +20,26 @@
         }
 
         body {
-
             background-image: linear-gradient(#f3a6a6, #afb4ea);
             overflow: auto;
         }
 
         #music_vessel {
-            width: 1000px;
+            width: 70%;
             height: 480px;
-            margin: 100px auto;
+            margin: 5% auto;
             background: rgba(255, 255, 255, 0.4);
             border-radius: 25px;
+        }
+
+        #extra_button {
+            width: 50px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.4);
+            position: fixed;
+            left: 85.5%;
+            top: 15%;
+            border-radius: 20px;
         }
 
         #music_display {
@@ -39,8 +48,7 @@
         }
 
         #music_image {
-            width: 250px;
-            height: 250px;
+            width: 25%;
             margin: 60px;
             float: left;
             border-radius: 125px;
@@ -48,26 +56,25 @@
         }
 
         #music_menu {
-            margin: 0 60px 20px;
+            margin: 0 5% 5%;
         }
-
-
 
         #music_up,
         #music_play,
         #music_pause,
-        #music_next {
-            margin: 0 8px;
-            background-size: 100% 100%;
-            width: 35px;
-            height: 35px;
+        #music_next,
+        #music_download {
+            margin: 6px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
         }
 
         #music_up:hover,
         #music_play:hover,
         #music_pause:hover,
-        #music_next:hover {
+        #music_next:hover,
+        #music_download:hover {
             opacity: .3;
         }
 
@@ -80,14 +87,15 @@
         #music_play {
             float: left;
             background: url('images/play.png') no-repeat;
-            background-size: auto 35px;
+            background-size: auto 32px;
         }
 
         #music_pause {
             float: left;
-            background: url('images/pause.png');
+            background: url('images/pause.png') no-repeat;
             background-size: cover;
             display: none;
+            background-size: auto 32px;
         }
 
         #music_next {
@@ -96,11 +104,19 @@
             background-size: cover;
         }
 
+        #music_download {
+            float: left;
+            background: url('images/download.png');
+            background-size: cover;
+        }
+
         #menu_right {
-            width: 650px;
-            margin-left: 50px;
+            width: 70%;
+            margin: 0 5%;
             float: left
         }
+
+
 
         #music_title {
             float: left;
@@ -121,7 +137,7 @@
         #duration_control {
             display: block;
             clear: right;
-            width: 650px;
+            width: 100%;
             cursor: pointer;
         }
     </style>
@@ -155,79 +171,82 @@
                     <input type="range" id="duration_control" value="0" disabled>
                 </div>
             </div>
+            <a href="images/1.png" download="123.png" id="music_download"></a>
         </div>
         <audio id="music_audio"></audio>
+    </div>
+    <div id="extra_button">
+    </div>
+    <script>
+        try {
+            const musicList = [
+                { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
+            ]
+            if (musicList.length != 0) {
+                const musicImg = document.getElementById('music_image');
+                const musicUp = document.getElementById('music_up');
+                const musicPlay = document.getElementById('music_play');
+                const musicPause = document.getElementById("music_pause");
+                const musicNext = document.getElementById("music_next");
+                const musicRight = document.getElementById("music_right");
+                const musicTitle = document.getElementById("music_title");
+                const musicDuration = document.getElementById("music_duration");
+                const durationControl = document.getElementById('duration_control');
+                const musicAudio = document.getElementById("music_audio");
+                //音乐播放列表
+                let activePlay = 0; // 当前播放的那一首
+                let degree = 0;
+                var timer, totalF, totalM;
+                function rotate() {      //图片旋转
+                    timer = setInterval(() => {
+                        musicImg.style.transform = `rotate(${degree}deg)`;
+                        degree++;
+                        if (degree == 360) {
+                            degree = 0;
+                        }
+                    }, 30);
+                }
 
-        <script>
-            try {
-                const musicList = [
-                    { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
-                ]
-                if (musicList.length != 0) {
-                    const musicImg = document.getElementById('music_image');
-                    const musicUp = document.getElementById('music_up');
-                    const musicPlay = document.getElementById('music_play');
-                    const musicPause = document.getElementById("music_pause");
-                    const musicNext = document.getElementById("music_next");
-                    const musicRight = document.getElementById("music_right");
-                    const musicTitle = document.getElementById("music_title");
-                    const musicDuration = document.getElementById("music_duration");
-                    const durationControl = document.getElementById('duration_control');
-                    const musicAudio = document.getElementById("music_audio");
-                    //音乐播放列表
-                    let activePlay = 0; // 当前播放的那一首
-                    let degree = 0;
-                    var timer, totalF, totalM;
-                    function rotate() {      //图片旋转
-                        timer = setInterval(() => {
-                            musicImg.style.transform = `rotate(${degree}deg)`;
-                            degree ++;
-                            if (degree == 360) {
-                                degree = 0;
-                            }
-                        }, 30);
-                    }
+                console.log(musicAudio.duration);
+                musicTitle.innerText = musicList[activePlay].title;
+                musicAudio.src = musicList[activePlay].url;
+                durationControl.disabled = false;
 
-                    console.log(musicAudio.duration);
-                    musicTitle.innerText = musicList[activePlay].title;
-                    musicAudio.src = musicList[activePlay].url;
-                    durationControl.disabled = false;
-
-                    // 开始播放
-                    musicPlay.onclick = () => {
-                        musicAudio.play();
-                        durationControl.max = musicAudio.duration;
-                        totalF = parseInt(musicAudio.duration / 60); //总时长 分钟
-                        totalM = parseInt(musicAudio.duration % 60); //总时长 秒数
-                        totalM = totalM < 10 ? '0' + totalM : totalM;
-                        musicPlay.style.display = "none";
-                        musicPause.style.display = "block";
-                        rotate();
-                    }
-                    musicPause.onclick = () => {
-                        musicAudio.pause();
-                        musicPlay.style.display = "block";
-                        musicPause.style.display = "none";
-                        clearInterval(timer);
-                    }
-                    musicAudio.ontimeupdate = () => {
-                        let currentF = parseInt(musicAudio.currentTime / 60);
-                        let currentM = parseInt(musicAudio.currentTime % 60);
-                        currentM = currentM < 10 ? '0' + currentM : currentM;
-                        musicDuration.innerHTML = ` ${currentF}:${currentM} / ${totalF}:${totalM}`;
-                        durationControl.value = musicAudio.currentTime;
-                    }
-                    durationControl.onchange = () => {
-                        musicAudio.currentTime = durationControl.value;
-                    }
+                // 开始播放
+                musicPlay.onclick = () => {
+                    musicAudio.play();
+                    durationControl.max = musicAudio.duration;
+                    totalF = parseInt(musicAudio.duration / 60); //总时长 分钟
+                    totalM = parseInt(musicAudio.duration % 60); //总时长 秒数
+                    totalM = totalM < 10 ? '0' + totalM : totalM;
+                    musicPlay.style.display = "none";
+                    musicPause.style.display = "block";
+                    rotate();
+                }
+                musicPause.onclick = () => {
+                    musicAudio.pause();
+                    musicPlay.style.display = "block";
+                    musicPause.style.display = "none";
+                    clearInterval(timer);
+                }
+                musicAudio.ontimeupdate = () => {
+                    let currentF = parseInt(musicAudio.currentTime / 60);
+                    let currentM = parseInt(musicAudio.currentTime % 60);
+                    currentM = currentM < 10 ? '0' + currentM : currentM;
+                    musicDuration.innerHTML = ` ${currentF}:${currentM} / ${totalF}:${totalM}`;
+                    durationControl.value = musicAudio.currentTime;
+                }
+                durationControl.onchange = () => {
+                    musicAudio.currentTime = durationControl.value;
                 }
             }
+        }
 
 
 
-            catch (err) {
-                alert(err);
-            }
+        catch (err) {
+            alert(err);
+        }
 
 
 
@@ -235,7 +254,7 @@
 
 
 
-        </script>
+    </script>
 </body>
 
 </html>
