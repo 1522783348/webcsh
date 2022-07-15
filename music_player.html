@@ -20,7 +20,7 @@
         }
 
         body {
-            background-image: linear-gradient(#f3a6a6, #afb4ea);
+            background: linear-gradient(#f3a6a6, #afb4ea);
             overflow: auto;
         }
 
@@ -33,7 +33,7 @@
         }
 
         #extra_button {
-            width: 50px;
+            width: 60px;
             height: 120px;
             background: rgba(255, 255, 255, 0.4);
             position: fixed;
@@ -63,7 +63,8 @@
         #music_play,
         #music_pause,
         #music_next,
-        #music_download {
+        #music_download,
+        #light_control {
             margin: 6px;
             width: 32px;
             height: 32px;
@@ -74,7 +75,8 @@
         #music_play:hover,
         #music_pause:hover,
         #music_next:hover,
-        #music_download:hover {
+        #music_download:hover,
+        #light_control:hover {
             opacity: .3;
         }
 
@@ -110,13 +112,24 @@
             background-size: cover;
         }
 
+        #light_control {
+            height: 50px;
+            width: 50px;
+            margin: 0;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -60%);
+            font: 900 16px/50px Helvetica, sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
         #menu_right {
             width: 70%;
             margin: 0 5%;
             float: left
         }
-
-
 
         #music_title {
             float: left;
@@ -176,24 +189,41 @@
         <audio id="music_audio"></audio>
     </div>
     <div id="extra_button">
+        <div id="light_control" onclick="switchLight()">dark</div>
     </div>
     <script>
         try {
+            const body = document.body;
+            const musicImg = document.getElementById('music_image');
+            const musicUp = document.getElementById('music_up');
+            const musicPlay = document.getElementById('music_play');
+            const musicPause = document.getElementById("music_pause");
+            const musicNext = document.getElementById("music_next");
+            const musicRight = document.getElementById("music_right");
+            const musicTitle = document.getElementById("music_title");
+            const musicDuration = document.getElementById("music_duration");
+            const durationControl = document.getElementById('duration_control');
+            const musicAudio = document.getElementById("music_audio");
+            const lightControl = document.getElementById("light_control");
             const musicList = [
                 { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
-            ]
+            ]//音乐播放列表
+            var light = true;
+            function switchLight() {
+                if (light) {
+                    body.style.background = '#222';
+                    lightControl.innerHTML = "light";
+                    light = false;
+                }
+                else {
+                    body.style.background = 'linear-gradient(#f3a6a6, #afb4ea)';
+                    lightControl.innerHTML = "dark";
+                    light = true;
+                }
+            }
             if (musicList.length != 0) {
-                const musicImg = document.getElementById('music_image');
-                const musicUp = document.getElementById('music_up');
-                const musicPlay = document.getElementById('music_play');
-                const musicPause = document.getElementById("music_pause");
-                const musicNext = document.getElementById("music_next");
-                const musicRight = document.getElementById("music_right");
-                const musicTitle = document.getElementById("music_title");
-                const musicDuration = document.getElementById("music_duration");
-                const durationControl = document.getElementById('duration_control');
-                const musicAudio = document.getElementById("music_audio");
-                //音乐播放列表
+
+
                 let activePlay = 0; // 当前播放的那一首
                 let degree = 0;
                 var timer, totalF, totalM;
@@ -207,7 +237,6 @@
                     }, 30);
                 }
 
-                console.log(musicAudio.duration);
                 musicTitle.innerText = musicList[activePlay].title;
                 musicAudio.src = musicList[activePlay].url;
                 durationControl.disabled = false;
