@@ -69,7 +69,7 @@
 
         #lyric_scroller {
             /* position: fixed; */
-            transition: transform 0.1s ease-out 0s;
+            transition: all 0.1s ease-out 0s;
             transform: translate(50px, 190px);
 
         }
@@ -382,7 +382,7 @@
 
             function clickLyric(toJump) {
                 lyrics[seq].className = 'lyric';
-                seq = toJump.id;
+                seq = Number(toJump.id);
                 toJump.className = 'lyric highlight';
                 translateY = 190 - 50 * seq;
                 lyricScroller.style.transform = `translate(50px,${translateY}px)`;
