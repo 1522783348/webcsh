@@ -43,16 +43,47 @@
         }
 
         #music_display {
+            display: flex;
             margin: 10px;
-            overflow: auto;
+            overflow: hidden;
+        }
+
+        #image_container {
+            width: 25%;
+            float: left;
+            margin: 5% 0 5% 5%;
         }
 
         #music_image {
-            width: 25%;
-            margin: 60px;
-            float: left;
+            width: 100%;
             border-radius: 125px;
             outline: 5px solid rgba(0, 0, 0, 0.6);
+        }
+
+        #lyric_container {
+            width: 80%;
+            height: 400px;
+            float: right;
+            /* overflow: hidden; */
+        }
+
+        #lyric_scroller {
+            /* position: fixed; */
+            transition: transform 0.1s ease-out 0s;
+            transform: translate(50px, 190px);
+
+        }
+
+        .lyric {
+            color: #fff;
+            font: 550 21px/30px Arial, sans-serif;
+            cursor: pointer;
+            margin: 20px 0;
+            height: 30px;
+        }
+
+        .highlight {
+            font-size: 30px;
         }
 
         #music_menu {
@@ -126,8 +157,8 @@
         }
 
         #menu_right {
-            width: 70%;
-            margin: 0 5%;
+            width: 75%;
+            margin-left: 5%;
             float: left
         }
 
@@ -161,7 +192,12 @@
     <div id="music_vessel">
         <div id="music_display">
             <!-- 默认音乐图片填充 -->
-            <img src="images/1.png" id="music_image">
+            <div id="image_container">
+                <img src="images/1.png" id="music_image">
+            </div>
+            <div id="lyric_container">
+                <div id="lyric_scroller"></div>
+            </div>
         </div>
 
         <!-- 操作按钮 -->
@@ -184,7 +220,7 @@
                     <input type="range" id="duration_control" value="0" disabled>
                 </div>
             </div>
-            <a href="images/1.png" download="123.png" id="music_download"></a>
+            <!-- <a href="images/1.png" download="123.png" id="music_download"></a> -->
         </div>
         <audio id="music_audio"></audio>
     </div>
@@ -192,96 +228,167 @@
         <div id="light_control" onclick="switchLight()">dark</div>
     </div>
     <script>
-        try {
-            const body = document.body;
-            const musicImg = document.getElementById('music_image');
-            const musicUp = document.getElementById('music_up');
-            const musicPlay = document.getElementById('music_play');
-            const musicPause = document.getElementById("music_pause");
-            const musicNext = document.getElementById("music_next");
-            const musicRight = document.getElementById("music_right");
-            const musicTitle = document.getElementById("music_title");
-            const musicDuration = document.getElementById("music_duration");
-            const durationControl = document.getElementById('duration_control');
-            const musicAudio = document.getElementById("music_audio");
-            const lightControl = document.getElementById("light_control");
-            const musicList = [
-                { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
-            ]//音乐播放列表
-            var light = true;
-            function switchLight() {
-                if (light) {
-                    body.style.background = '#222';
-                    lightControl.innerHTML = "light";
-                    light = false;
-                }
-                else {
-                    body.style.background = 'linear-gradient(#f3a6a6, #afb4ea)';
-                    lightControl.innerHTML = "dark";
-                    light = true;
-                }
+        const body = document.body;
+        const musicImg = document.getElementById('music_image');
+        const musicUp = document.getElementById('music_up');
+        const musicPlay = document.getElementById('music_play');
+        const musicPause = document.getElementById("music_pause");
+        const musicNext = document.getElementById("music_next");
+        const musicRight = document.getElementById("music_right");
+        const musicTitle = document.getElementById("music_title");
+        const musicDuration = document.getElementById("music_duration");
+        const durationControl = document.getElementById('duration_control');
+        const musicAudio = document.getElementById("music_audio");
+        const lightControl = document.getElementById("light_control");
+        const lyricScroller = document.getElementById('lyric_scroller');
+        let seq = 0;
+        let translateY = 190;
+        const musicList = [
+            { title: "Fly Me To The Moon", url: 'music/Fly Me To The Moon.mp3' }
+        ]//音乐播放列表
+        var light = true;
+        function switchLight() {
+            if (light) {
+                body.style.background = '#222';
+                lightControl.innerHTML = "light";
+                light = false;
             }
-            if (musicList.length != 0) {
-
-
-                let activePlay = 0; // 当前播放的那一首
-                let degree = 0;
-                var timer, totalF, totalM;
-                function rotate() {      //图片旋转
-                    timer = setInterval(() => {
-                        musicImg.style.transform = `rotate(${degree}deg)`;
-                        degree++;
-                        if (degree == 360) {
-                            degree = 0;
-                        }
-                    }, 30);
-                }
-
-                musicTitle.innerText = musicList[activePlay].title;
-                musicAudio.src = musicList[activePlay].url;
-                durationControl.disabled = false;
-
-                // 开始播放
-                musicPlay.onclick = () => {
-                    musicAudio.play();
-                    durationControl.max = musicAudio.duration;
-                    totalF = parseInt(musicAudio.duration / 60); //总时长 分钟
-                    totalM = parseInt(musicAudio.duration % 60); //总时长 秒数
-                    totalM = totalM < 10 ? '0' + totalM : totalM;
-                    musicPlay.style.display = "none";
-                    musicPause.style.display = "block";
-                    rotate();
-                }
-                musicPause.onclick = () => {
-                    musicAudio.pause();
-                    musicPlay.style.display = "block";
-                    musicPause.style.display = "none";
-                    clearInterval(timer);
-                }
-                musicAudio.ontimeupdate = () => {
-                    let currentF = parseInt(musicAudio.currentTime / 60);
-                    let currentM = parseInt(musicAudio.currentTime % 60);
-                    currentM = currentM < 10 ? '0' + currentM : currentM;
-                    musicDuration.innerHTML = ` ${currentF}:${currentM} / ${totalF}:${totalM}`;
-                    durationControl.value = musicAudio.currentTime;
-                }
-                durationControl.onchange = () => {
-                    musicAudio.currentTime = durationControl.value;
-                }
+            else {
+                body.style.background = 'linear-gradient(#f3a6a6, #afb4ea)';
+                lightControl.innerHTML = "dark";
+                light = true;
             }
         }
+        if (musicList.length != 0) {
 
 
+            let activePlay = 0; // 当前播放的那一首
+            let degree = 0;
+            var timer, totalF, totalM;
+            var lrc = `[00:00.00]... 
+[00:25.30]Fly me to the moon
+[00:28.87]And let me play among the stars
+[00:34.03]Let me see what spring is like on Jupiter and Mars
+[00:41.94]In other words, hold my hand
+[00:50.03]In other words, darling, kiss me
+[00:56.98] 
+[00:58.38]Fill my heart with song
+[01:01.46]And let me sing forevermore
+[01:06.99]You are all I long for
+[01:10.05]All I worship and adore
+[01:14.60]In other words, please be true
+[01:22.69]In other words, I love you
+[01:31.07] 
+[02:03.34]Fly me to the moon
+[02:06.49]And let me play among the stars
+[02:11.95]Let me see what spring is like on Jupiter and Mars
+[02:19.59]In other words, hold my hand
+[02:27.69]In other words, darling, kiss me
+[02:34.32] 
+[02:36.35]Fill my heart with song
+[02:39.01]And let me sing forevermore
+[02:44.57]You are all I long for
+[02:47.85]All I worship and adore
+[02:52.15]In other words, please be true
+[03:00.22]In other words, I love you
+[03:08.52] 
+[03:34.30]Only you
+[03:37.72]Only you
+[03:39.88] 
+[03:40.92]Fill my heart with song
+[03:44.07]And let me sing forevermore
+[03:49.14]You are all I long for
+[03:52.88]All I worship and adore
+[03:57.36]In other words, please be true
+[04:05.26]In other words, I love you
+[04:13.50]In other words, I love you
+[04:23.76] 
+`;
+            const lyricExp = /^\[(\d{2}):(\d{2}).(\d{2})\](.*)/;
+            let lyric = "";
 
-        catch (err) {
-            alert(err);
+            function rotate() {      //图片旋转
+                timer = setInterval(() => {
+                    musicImg.style.transform = `rotate(${degree}deg)`;
+                    degree++;
+                    if (degree == 360) {
+                        degree = 0;
+                    }
+                }, 30);
+            }
+
+            musicTitle.innerText = musicList[activePlay].title;
+            musicAudio.src = musicList[activePlay].url;
+            durationControl.disabled = false;
+
+            let lrcTime = lrc.split("\n")
+                .map((line, index, array) => {
+                    //解析歌词
+                    let result;
+                    if (result = line.trim().match(lyricExp)) {
+                        lyric += `<p class="lyric" id="${index}" onclick="clickLyric(this)">${result[4].trim()}</p>`;
+                        return result[1] * 60 + Number(result[2]) + result[3] / 1000;
+                    }
+                })
+            lyricScroller.innerHTML = lyric;
+            const lyrics = lyricScroller.querySelectorAll('.lyric');
+            console.log(lyricScroller);
+            lyrics[seq].className = 'lyric highlight';
+            let final = lrcTime.length;
+
+            // 开始播放
+            musicPlay.onclick = () => {
+                musicAudio.play();
+                durationControl.max = musicAudio.duration;
+                totalF = parseInt(musicAudio.duration / 60); //总时长 分钟
+                totalM = parseInt(musicAudio.duration % 60); //总时长 秒数
+                totalM = totalM < 10 ? '0' + totalM : totalM;
+                musicPlay.style.display = "none";
+                musicPause.style.display = "block";
+                rotate();
+            }
+            musicPause.onclick = () => {
+                musicAudio.pause();
+                musicPlay.style.display = "block";
+                musicPause.style.display = "none";
+                clearInterval(timer);
+            }
+            musicAudio.ontimeupdate = () => {
+                let currentF = parseInt(musicAudio.currentTime / 60);
+                let currentM = parseInt(musicAudio.currentTime % 60);
+                currentM = currentM < 10 ? '0' + currentM : currentM;
+                musicDuration.innerHTML = ` ${currentF}:${currentM} / ${totalF}:${totalM}`;
+                durationControl.value = musicAudio.currentTime;
+                if (seq + 1 < final && musicAudio.currentTime >= lrcTime[seq + 1]) {
+                    lyrics[seq].className = 'lyric';
+                    seq++;
+                    lyrics[seq].className = 'lyric highlight';
+                    translateY -= 50;
+                    lyricScroller.style.transform = `translate(50px,${translateY}px)`;
+                }
+            }
+            durationControl.onchange = () => {
+                let curr = durationControl.value;
+                musicAudio.currentTime = curr;
+                lyrics[seq].className = 'lyric';
+                for (seq = 0; lrcTime[seq] <= curr && seq < final; seq++)
+                    ;
+                seq--;
+                lyrics[seq].className = 'lyric highlight';
+                translateY = 190 - 50 * seq;
+                lyricScroller.style.transform = `translate(50px,${translateY}px)`;
+                console.log(translateY);
+            }
+
+            function clickLyric(toJump) {
+                lyrics[seq].className = 'lyric';
+                seq = toJump.id;
+                toJump.className = 'lyric highlight';
+                translateY = 190 - 50 * seq;
+                lyricScroller.style.transform = `translate(50px,${translateY}px)`;
+                musicAudio.currentTime = lrcTime[seq];
+            }
         }
-
-
-
-
-
-
 
     </script>
 </body>
